@@ -4,13 +4,11 @@
 
 ## Test and Verify
 
-进入 [https://deralive.github.io/Compiler](https://deralive.github.io/Compiler) 可以进行四个实验的输出验证（
-每个实验均自带测试集）。
-
+进入 [https://deralive.github.io/Compiler](https://deralive.github.io/Compiler) 可以进行四个实验的输出验证（每个实验均自带测试集）。
 
 ## Build
 
-本项目核心逻辑采用 C++ 编写，通过 **Emscripten** 编译链生成 WebAssembly，从而实现在浏览器端的本地高性能计算。
+项目核心逻辑采用 C++ 编写，通过 **Emscripten** 编译链生成 WebAssembly，实现在浏览器端的本地高性能计算。
 
 > [!WARNING]
 验证亮点阶段在前端内即可完成。若需要从零开始复现本前端，请遵循以下在 Windows 下的完整复现流程。
