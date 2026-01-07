@@ -1,5 +1,5 @@
-#import "../_Template/src/colorbox.typ": *
-#import "../_Template/src/preamble.typ": *
+#import "_Template/src/colorbox.typ": *
+#import "_Template/src/preamble.typ": *
 #show: template.with(header: "华东师范大学软件工程学院实验报告", author: "张梓卫")
 #import "@preview/codly:1.3.0": *
 #show: codly-init.with()
@@ -67,7 +67,10 @@
 
 #v(-0.5em)
 
-#heading(numbering: none, level: 2)[ #h(-0.5em) 项目地址：#link("https://github.com/deralive/Compiler")[https://github.com/deralive/Compiler]]
+#heading(
+  numbering: none,
+  level: 2,
+)[ #h(-0.5em) 项目地址：#link("https://github.com/deralive/Compiler")[https://github.com/deralive/Compiler]]
 
 // + 在错误处理环节设计了预测式恢复机制，实现了语法层错误的详细提示。
 // + 在测试阶段编写了自动化测试脚本，实现了批量输入文件测试。

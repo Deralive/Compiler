@@ -1,0 +1,162 @@
+#import "colorbox.typ": *
+#import "@preview/mitex:0.2.6": *
+#import "@preview/subpar:0.2.2": *
+#import "@preview/subpar:0.2.2": grid as subfigure
+#import "@preview/numbly:0.1.0": numbly
+#import "@preview/cuti:0.4.0": show-cn-fakebold
+#import "@preview/codly:1.3.0": * // 代码高亮包
+#import "@preview/codly-languages:0.1.6": *
+#import "@preview/cjk-unbreak:0.2.1": remove-cjk-break-space // 解决 CJK 换行问题
+#import "@preview/citegeist:0.2.0": load-bibliography // 解决引用缺失问题
+
+#let all-bib-entries() = {
+  let bib-file = {
+    let all-bib = query(bibliography)
+    if all-bib.len() > 0 {
+      all-bib.at(0).sources.at(0)
+    } else {
+      none
+    }
+  }
+  if bib-file == none {
+    (:)
+  } else {
+    load-bibliography(read(bib-file))
+  }
+}
+
+#let possible-missing-ref(it) = {
+  if str(it.target) in all-bib-entries() or it.element != none {
+    it
+  } else {
+    text(fill: red, "<未找到引用" + str(it.target) + ">")
+  }
+}
+
+#let icon(path) = box(
+  baseline: 0.125em,
+  height: 0.8em,
+  width: 1.0em,
+  align(center + horizon, image(path)),
+)
+
+#let faGithub = icon("../icons/fa-github.svg")
+#let faLinux = icon("../icons/fa-linux.svg")
+#let faWindows = icon("../icons/fa-windows.svg")
+
+#let template(header: "", author: "", title: "", body) = {
+  set document(author: author, title: title, date: auto)
+  set par(
+    first-line-indent: (amount: 2em, all: true),
+    leading: 1em,
+    spacing: 1.2em,
+    hanging-indent: 0em,
+  )
+
+  set list(
+    tight: true,
+    marker: ([•], [--], [>]),
+    indent: 1em,
+    body-indent: 0.8em,
+  )
+
+  set enum(
+    tight: true,
+    numbering: "1.1.",
+    indent: 1em,
+    body-indent: 0.5em,
+    full: true,
+  )
+
+  show: show-cn-fakebold
+  show: remove-cjk-break-space
+  set text(
+    size: 10pt,
+    font: ("Times New Roman", "SimSun"),
+    lang: "zh",
+    region: "cn",
+  )
+
+  set heading(numbering: "1.1.1  ")
+  show heading: it => box(width: 100%)[
+    #set text(font: ("Times New Roman", "Source Han Serif SC", "SimSun"))
+    #if it.numbering != none {
+      text(size: 1.1em)[
+        #counter(heading).display("1.1.1")
+      ]
+    }
+    #h(0.5em) #text(weight: "extrabold")[#it.body]
+  ]
+
+  show heading.where(level: 1): it => {
+    counter(math.equation).update(0)
+    it
+  }
+
+  set footnote.entry(indent: 0em)
+
+  set math.equation(
+    numbering: n => {
+      numbering("(1.1)", counter(heading).get().first(), n)
+    },
+  )
+
+  show outline: set heading(numbering: none)
+  show outline.entry.where(level: 1): it => {
+    set block(above: 1.1em)
+    text(
+      font: ("Times New Roman", "Source Han Serif SC", "SimSun"),
+    )[
+      #text(weight: "extrabold", size: 1.1em)[#it]
+    ]
+  }
+  show outline.entry.where(level: 2): it => {
+    set block(above: 1.1em)
+    it
+  }
+
+  show: codly-init
+  codly(languages: codly-languages)
+  show raw: it => {
+    set text(font: ("JetBrains Mono NL", "SimSun"))
+    it
+  }
+
+  show link: {
+    underline.with(stroke: rgb("#0074d9"), offset: 2pt)
+  }
+  show link: set text(blue)
+
+  show "Github": githubUrl => box[
+    #box(faGithub) #githubUrl
+  ]
+
+  show "Linux": name => box[
+    #box(faLinux) #name
+  ]
+
+  show "Windows": name => box[
+    #box(faWindows) #name
+  ]
+
+  show ref: possible-missing-ref
+
+  set page(
+    width: 210mm,
+    height: 297mm,
+    margin: (
+      left: 3.18cm,
+      right: 3.18cm,
+      top: 2.54cm,
+      bottom: 2.54cm,
+    ),
+    fill: white,
+    header: none,
+    footer: context [
+      #align(center)[
+        #counter(page).display("1")
+      ]
+    ],
+  )
+  body
+}
