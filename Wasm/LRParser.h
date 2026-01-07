@@ -17,7 +17,7 @@
 using namespace std;
 
 namespace Lab3 {
-    // 内部使用的空串符号
+
     const string EPSILON = "@";
 
     enum TokType { TOK_EOF, TOK_ID, TOK_NUM, TOK_KW, TOK_SYM };
@@ -45,20 +45,16 @@ namespace Lab3 {
     public:
         Grammar();
 
-        // 核心亮点功能：重置并加载用户自定义文法
         void resetAndLoad(const string &input);
 
-        // 核心亮点功能：导出表格数据给前端可视化
         string toJSON() const;
         string getSetsJSON() const {
             stringstream ss;
             ss << "{";
-
-            // 1. 导出 FIRST 集
             ss << "\"first\": {";
             bool firstNT = true;
             for (const auto &kv : fst) {
-                // 只输出非终结符的 First 集 (通常用户只关心这个，虽然算法也会算终结符的)
+
                 if (!isNonTerm(kv.first))
                     continue;
 
@@ -77,7 +73,6 @@ namespace Lab3 {
             }
             ss << "},";
 
-            // 2. 导出 FOLLOW 集
             ss << "\"follow\": {";
             firstNT = true;
             for (const auto &kv : flw) {
@@ -146,7 +141,6 @@ namespace Lab3 {
         loadRules();
     }
 
-    // === 解析用户输入的文法字符串 ===
     void Grammar::resetAndLoad(const string &input) {
         prods.clear();
         terms.clear();
@@ -266,7 +260,7 @@ namespace Lab3 {
     }
 
     void Grammar::loadRules() {
-        // 这是 Lab3 默认规则
+
         terms = {"{", "}", "if", "(", ")", "then", "else", "while", "=", ";", ">", "<", ">=", "<=", "==", "+", "-", "*", "/", "ID", "NUM", "$"};
         nterms = {"program",  "compoundstmt", "stmt",      "stmts",          "ifstmt",   "whilestmt",     "assgstmt",
                   "boolexpr", "boolop",       "arithexpr", "arithexprprime", "multexpr", "multexprprime", "simpleexpr"};
@@ -589,7 +583,7 @@ namespace Lab3 {
         hist.push_back(pid);
         int popN = p.rhs.size();
         if (popN == 1 && p.rhs[0] == EPSILON)
-            popN = 0; // 关键修改：空串不退栈
+            popN = 0;
         for (int i = 0; i < popN; ++i) {
             st.pop();
             syms.pop();

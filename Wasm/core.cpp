@@ -82,9 +82,19 @@ std::string generate_sets_adapter(std::string input_grammar) {
     }
 }
 
+std::string get_symbol_table_adapter(std::string input) {
+    try {
+        // 直接调用我们在 TranslationSchema.h 中新写的辅助函数
+        return Lab4::AnalyzeAndGetTable(input);
+    } catch (...) {
+        return "[]";
+    }
+}
+
 EMSCRIPTEN_BINDINGS(my_module) {
     emscripten::function("processInput", &run_lab_adapter);
     emscripten::function("generateGrammarTable", &generate_grammar_table_adapter);
     emscripten::function("generateRegexGraph", &generate_regex_graph_adapter);
     emscripten::function("generateSets", &generate_sets_adapter);
+    emscripten::function("getSymbolTable", &get_symbol_table_adapter);
 }

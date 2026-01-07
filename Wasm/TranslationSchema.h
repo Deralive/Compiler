@@ -69,6 +69,7 @@ namespace Lab4 {
         VarType kind;
         int iVal;
         double rVal;
+        int line;
     };
 
     struct Token {
@@ -176,9 +177,7 @@ namespace Lab4 {
                         cout << "error: expected " << X << " but got " << curVal << endl;
                         return;
                     }
-                }
-
-                else {
+                } else {
                     if (grammarTable[X].count(curType)) {
                         parseStack.pop_back();
                         vector<string> rhs = grammarTable[X][curType];
@@ -206,6 +205,56 @@ namespace Lab4 {
                     cout << endl;
                 }
             }
+        }
+
+        string getSymbolTableJSON() {
+            stringstream ss;
+            ss << "[";
+            bool first = true;
+            int currentOffset = 0;
+
+            for (const auto &name : outputOrder) {
+                if (env.find(name) == env.end())
+                    continue;
+                VarData d = env[name];
+
+                if (!first)
+                    ss << ",";
+                ss << "{";
+                ss << "\"name\": \"" << name << "\",";
+
+                string typeStr = "unknown";
+                int size = 0;
+
+                if (d.kind == T_INT) {
+                    typeStr = "int";
+                    size = 4;
+                } else if (d.kind == T_REAL) {
+                    typeStr = "real";
+                    size = 8;
+                } else if (d.kind == T_BOOL) {
+                    typeStr = "bool";
+                    size = 1;
+                }
+
+                ss << "\"type\": \"" << typeStr << "\",";
+                ss << "\"line\": " << d.line << ",";
+                ss << "\"size\": " << size << ",";
+                ss << "\"offset\": " << currentOffset << ",";
+
+                ss << "\"val\": \"";
+                if (d.kind == T_INT)
+                    ss << d.iVal;
+                else
+                    ss << fixed << setprecision(2) << d.rVal;
+                ss << "\"";
+
+                ss << "}";
+                currentOffset += size;
+                first = false;
+            }
+            ss << "]";
+            return ss.str();
         }
 
     private:
@@ -270,6 +319,8 @@ namespace Lab4 {
                 return;
             }
             VarData data;
+            data.line = ctxLine;
+
             if (act == "#DECL_INT") {
                 data.kind = T_INT;
                 if (ctxMatchedStr.find('.') != string::npos) {
@@ -281,7 +332,13 @@ namespace Lab4 {
                 data.rVal = stod(ctxMatchedStr);
             }
             env[ctxLastId] = data;
-            outputOrder.push_back(ctxLastId);
+
+            bool exists = false;
+            for (const auto &s : outputOrder)
+                if (s == ctxLastId)
+                    exists = true;
+            if (!exists)
+                outputOrder.push_back(ctxLastId);
         }
 
         void handleAssign(const string &act) {
@@ -433,11 +490,17 @@ namespace Lab4 {
             addProduction("const_val", {"INTNUM"}, {"INTNUM"});
             addProduction("const_val", {"REALNUM"}, {"REALNUM"});
             addProduction("compoundstmt", {"{"}, {"{", "stmts", "}"});
-            addProduction("stmts", {"if", "ID", "{"}, {"stmt", "stmts"});
+
+            vector<string> stmtStart = {"if", "ID", "{", "int", "real"};
+            addProduction("stmts", stmtStart, {"stmt", "stmts"});
             addProduction("stmts", {"}"}, {"E"});
+
             addProduction("stmt", {"if"}, {"ifstmt"});
             addProduction("stmt", {"ID"}, {"assgstmt"});
             addProduction("stmt", {"{"}, {"compoundstmt"});
+
+            addProduction("stmt", {"int", "real"}, {"decl", ";"});
+
             addProduction("assgstmt", {"ID"}, {"ID", "#SAVE_LHS", "=", "arithexpr", "#ASSIGN", ";"});
             addProduction("ifstmt", {"if"}, {"if", "(", "boolexpr", ")", "#IF_CHECK", "then", "stmt", "#ELSE_JUMP", "else", "stmt", "#IF_END"});
             vector<string> exprStart = {"ID", "INTNUM", "REALNUM", "("};
@@ -474,6 +537,16 @@ namespace Lab4 {
 
         CoreParser parser;
         parser.analyze(tokens);
+    }
+
+    string AnalyzeAndGetTable(string input) {
+        string cleanCode = sanitize_input(input);
+        CodeScanner scanner;
+        vector<Token> tokens = scanner.tokenize(cleanCode);
+
+        CoreParser parser;
+        parser.analyze(tokens);
+        return parser.getSymbolTableJSON();
     }
 
 #endif

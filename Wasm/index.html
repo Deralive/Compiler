@@ -27,6 +27,8 @@
                 display: flex;
                 height: 100vh;
                 background-color: #f4f4f9;
+                /* 防止布局在移动端溢出 */
+                overflow: hidden;
             }
 
             .sidebar {
@@ -39,6 +41,7 @@
                 box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
                 overflow-y: auto;
                 flex-shrink: 0;
+                z-index: 100;
             }
 
             .sidebar h2 {
@@ -60,6 +63,8 @@
                 border-radius: 6px;
                 transition: all 0.2s;
                 font-size: 0.95rem;
+                /* 防止按钮文字在移动端换行 */
+                white-space: nowrap;
             }
 
             .lab-btn:hover {
@@ -190,6 +195,14 @@
                 border-color: #3498db;
             }
 
+            /* 输入区域容器，方便响应式控制 */
+            .input-group {
+                display: flex;
+                gap: 10px;
+                align-items: stretch;
+                margin-bottom: 5px;
+            }
+
             .controls {
                 margin: 10px 0;
                 display: flex;
@@ -213,6 +226,9 @@
                 cursor: pointer;
                 transition: background-color 0.2s;
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                /* 默认高度 */
+                height: 140px;
+                white-space: nowrap;
             }
 
             button.run-btn:hover {
@@ -413,6 +429,175 @@
                 color: #2980b9;
                 word-break: break-all;
             }
+
+            /* Lab 4 符号表专用样式 */
+            .sym-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-family: 'Consolas', 'Monaco', monospace;
+                font-size: 0.9rem;
+                /* 确保表格在容器内不溢出，允许容器滚动 */
+                min-width: 600px;
+            }
+
+            .sym-table th {
+                background: #34495e;
+                color: white;
+                padding: 10px;
+                text-align: left;
+                font-weight: 600;
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+
+            .sym-table td {
+                border-bottom: 1px solid #eee;
+                padding: 8px 10px;
+                color: #333;
+                vertical-align: middle;
+            }
+
+            .sym-table tr:nth-child(even) {
+                background-color: #f8f9fa;
+            }
+
+            .sym-table tr:hover {
+                background-color: #e9ecef;
+                transition: background-color 0.2s;
+            }
+
+            .type-badge {
+                display: inline-block;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 0.8rem;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            .type-int {
+                background-color: #e1f5fe;
+                color: #0288d1;
+            }
+
+            .type-real {
+                background-color: #fff3e0;
+                color: #f57c00;
+            }
+
+            .type-bool {
+                background-color: #fce4ec;
+                color: #c2185b;
+            }
+
+            .addr-text {
+                color: #999;
+                font-size: 0.85rem;
+            }
+
+            /* ------------------------------------------- */
+            /* 响应式设计 (Responsive Design) 适配移动端/小屏幕 */
+            /* ------------------------------------------- */
+            @media (max-width: 768px) {
+                body {
+                    flex-direction: column;
+                    /* 改为上下布局 */
+                    height: auto;
+                    /* 高度自适应 */
+                    overflow-y: auto;
+                    /* 允许 Body 滚动 */
+                }
+
+                /* 侧边栏变为顶部导航 */
+                .sidebar {
+                    width: 100%;
+                    height: auto;
+                    flex-direction: row;
+                    padding: 10px;
+                    overflow-x: auto;
+                    /* 允许横向滚动 */
+                    box-sizing: border-box;
+                    white-space: nowrap;
+                    border-bottom: 2px solid #ddd;
+                }
+
+                .sidebar h2 {
+                    display: none;
+                    /* 手机上隐藏大标题节省空间 */
+                }
+
+                .lab-btn {
+                    margin-bottom: 0;
+                    margin-right: 10px;
+                    padding: 8px 12px;
+                    font-size: 0.85rem;
+                }
+
+                /* 主内容区域调整 */
+                .main-content {
+                    padding: 10px;
+                    height: auto;
+                    overflow: visible;
+                }
+
+                .container {
+                    padding: 15px;
+                    box-shadow: none;
+                }
+
+                #lab-title {
+                    font-size: 1.5rem;
+                    margin-bottom: 15px;
+                }
+
+                /* 测试按钮网格变为2列 */
+                .test-buttons-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                /* 输入框与运行按钮变为上下排列 */
+                .input-group {
+                    flex-direction: column;
+                }
+
+                .CodeMirror {
+                    height: 120px;
+                }
+
+                button.run-btn {
+                    width: 100%;
+                    height: 50px !important;
+                    /* 强制覆盖内联样式的高度 */
+                    margin-top: 5px;
+                }
+
+                /* 可视化区域高度减小 */
+                .visual-container {
+                    height: 400px;
+                }
+
+                /* Lab 5/6 工具布局 */
+                .grammar-layout {
+                    flex-direction: column;
+                    height: auto;
+                }
+
+                .grammar-input-box,
+                .grammar-output-box {
+                    width: 100%;
+                    min-height: 300px;
+                }
+
+                /* 集合显示区域 */
+                .sets-container {
+                    flex-direction: column;
+                }
+
+                .set-panel {
+                    min-height: 200px;
+                }
+            }
         </style>
     </head>
 
@@ -420,8 +605,8 @@
         <div class="sidebar">
             <h2>编译原理实验</h2>
             <button class="lab-btn active" onclick="selectLab(1)">Lab 1: 词法分析</button>
-            <button class="lab-btn" onclick="selectLab(2)">Lab 2: LL 语法分析</button>
-            <button class="lab-btn" onclick="selectLab(3)">Lab 3: LR 语法分析</button>
+            <button class="lab-btn" onclick="selectLab(2)">Lab 2: LL(1) 语法分析</button>
+            <button class="lab-btn" onclick="selectLab(3)">Lab 3: SLR(1) 语法分析</button>
             <button class="lab-btn" onclick="selectLab(4)">Lab 4: 语义分析</button>
             <div style="height: 10px;"></div>
             <button class="lab-btn highlight" onclick="selectLab(5)">★ SLR(1) 表生成器</button>
@@ -439,15 +624,14 @@
                         <div class="test-buttons-grid" id="test-grid"></div>
                     </div>
 
-                    <div style="display: flex; gap: 10px; align-items: stretch; margin-bottom: 5px;">
+                    <div class="input-group">
                         <textarea id="input-text" placeholder="在此输入 C 代码..."></textarea>
-                        <button class="run-btn" style="height: 140px; white-space: nowrap;"
-                            onclick="runAnalysis()">运行<br>Compile</button>
+                        <button class="run-btn" onclick="runAnalysis()">运行<br>Compile</button>
                     </div>
 
                     <div id="regex-control-panel"
                         style="display: none; background: #fff8e1; border: 1px solid #ffeeba; padding: 10px; margin-bottom: 10px; border-radius: 6px;">
-                        <span style="font-weight: bold; color: #856404;">★ Lab 1 亮点: 正则表达式可视化 (NFA)</span>
+                        <span style="font-weight: bold; color: #856404;">★ Lab 1 亮点: 正则表达式转 NFA 可视化</span>
                         <div style="display: flex; gap: 10px; margin-top: 5px;">
                             <input type="text" id="regex-input" value="a(a|b)*b"
                                 style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: monospace;">
@@ -463,7 +647,7 @@
 
                     <div class="output-wrapper" id="console-wrapper">
                         <div class="panel-header">
-                            <span>📜 控制台输出 (Console Output)</span>
+                            <span>📜 控制台输出</span>
                         </div>
                         <div id="output-text" class="output-area">等待运行...</div>
                     </div>
@@ -487,6 +671,17 @@
                         </div>
                         <div id="dfa-chart-view">
                             <div class="empty-tip" style="margin-top: 100px;">输入正则表达式并点击生成</div>
+                        </div>
+                    </div>
+
+                    <div id="symtable-visual-area" class="visual-container">
+                        <div class="panel-header"
+                            style="background: #f1f8ff; color: #333; border-bottom: 1px solid #ddd;">
+                            <span>📊 符号表与内存布局</span>
+                            <span style="font-size:0.8rem; color:#666;">Offset Calculation</span>
+                        </div>
+                        <div id="symtable-view" style="padding: 0; overflow: auto; height: 100%; position: relative;">
+                            <div class="empty-tip" style="margin-top: 150px;">运行代码以查看内存布局</div>
                         </div>
                     </div>
 
@@ -574,7 +769,7 @@
                         { name: "3. While 循环", content: `{\nwhile ( ID == NUM ) \n{ \nID = NUM ;\n}\n}` },
                         { name: "4. If-Then-Else", content: `{\nif ( ID == ID )\nthen\nID = NUM ;\nelse\nID = ID * NUM ;\n}` },
                         { name: "5. 嵌套 If-Else", content: `{\nif ( ID < NUM ) then\n  if ( ID == NUM ) then \n    ID = NUM ;\n  else \n    ID = ID + NUM ;\nelse\n  ID = 0 ;\n}` },
-                        { name: "6. 复杂表达式", content: `{\nID = ID + ID * NUM + ID * ( ID + NUM ) ;\n}` },
+                        { name: "6. 缺少 Else (错误恢复)", content: `{\n    if ( a < b ) \n    then \n        a = a + 1 ;\n}` },
                         { name: "7. 混合控制", content: `{\nwhile ( ID >= NUM ) {\n  if ( ID != NUM ) then\n    ID = ID + 1 ;\n  else\n    ID = ID * 2 ;\n}\n}` },
                         { name: "8. 多重语句块", content: `{\nID = NUM ;\n{\n  ID = ID + 1 ;\n  {\n    ID = NUM ;\n  }\n}\n}` },
                         { name: "9. [错] 缺分号", content: `{\nID = NUM\nID = ID + 1 ;\n}` },
@@ -601,12 +796,12 @@
                         { name: "2. 错误检测", content: `int a = 3 ; int b = 5.73 ; real c = 3.0 ;\n{\na = a + 1 ;\nb = b + a ;\nif ( a < b ) then c = c / 0 ; else c = c / 4 ; \n}` },
                         { name: "3. 逻辑 ==", content: `int a = 10 ; int b = 25 ; real c = 2.1 ;\n{\na = a + 1 ;\nc = c * b ;\nb = b * a ;\nif ( a == b ) then c = c / 3 ; else c = c / 5 ; \n}` },
                         { name: "4. 复杂流", content: `int a = 16 ; int b = 21 ; real c = 3.0 ;\n{\na = a - 1 ;\nb = b + a ;\nif ( a <= b ) then a = b / 2 ; else c = c / 4 ; \na = a * 2 - 1 ;\nif ( a >= b ) then c = c / 2 ; else c = c / 4 ; \n}` },
-                        { name: "5. 优先级", content: `int a = 2 ; int b = 3 ; int c = 0 ; int d = 0 ;\n{\nc = a + b * 4 ;\nd = 10 - 4 / a ;\n}` },
-                        { name: "6. 未定义", content: `int a = 10 ;\n{\nx = a + 1 ;\n}` },
-                        { name: "7. 混合类型", content: `int i = 5 ; real r = 2.5 ;\n{\nr = r + i ;\n}` },
-                        { name: "8. 逻辑 !=", content: `int a = 5 ; int b = 10 ;\n{\nif ( a != 5 ) then b = 0 ; else b = 20 ; \n}` },
-                        { name: "9. 逻辑 >=", content: `int a = 10 ; int b = 10 ;\n{\nif ( a >= b ) then a = 1 ; else a = 0 ; \n}` },
-                        { name: "10. 类型错误", content: `int a = 1 ;\n{\na = 3.5 ;\n}` }
+                        { name: "5. 内存布局", content: `int a = 10 ;\nreal b = 3.14 ;\nint c = 20 ;\nreal d = 9.9 ;\n{\n  c = a + c ;\n}` },
+                        { name: "6. 块内声明", content: `int outer = 1 ;\n{\n  int innerA = 2 ;\n  {\n    real innerB = 3.5 ;\n    outer = outer + innerA ;\n  }\n}` },
+                        { name: "7. 类型转换", content: `int i = 10 ;\nreal r = 5.5 ;\n{\n  r = i ; /* 允许 */\n  i = 3.14 ; /* 报错 */\n}` },
+                        { name: "8. 混合运算", content: `int a = 2 ;\nreal b = 1.5 ;\nreal c = 0.0 ;\n{\n  c = a + b * 4.0 ;\n  a = a * 2 ;\n}` },
+                        { name: "9. 控制流", content: `int a = 10 ;\nint b = 20 ;\nreal m = 0.0 ;\n{\n  if ( a > b ) then m = a ; else m = b ;\n}` },
+                        { name: "10. 综合测试", content: `int i = 0 ; real r = 0.0 ;\n{\n  int k = 1 ;\n  {\n    real temp = 2.5 ;\n    i = k * 2 ;\n    r = temp + i ;\n  }\n}` }
                     ]
                 }
             };
@@ -614,7 +809,7 @@
             var Module = {
                 onRuntimeInitialized: function () {
                     wasmModule = Module;
-                    document.getElementById('wasm-status').innerText = "编译器核心已就绪";
+                    document.getElementById('wasm-status').innerText = "Wasm 模块已就绪";
                     document.getElementById('wasm-status').style.color = "#27ae60";
                 }
             };
@@ -634,15 +829,17 @@
                 const regexPanel = document.getElementById('regex-control-panel');
                 const dfaArea = document.getElementById('dfa-visual-area');
                 const treeArea = document.getElementById('tree-visual-area');
+                const symArea = document.getElementById('symtable-visual-area'); // 【新增】
                 const outputWrapper = document.getElementById('console-wrapper');
 
-                // 重置
+                // 重置所有区域为隐藏
                 stdArea.style.display = 'none';
                 toolArea.style.display = 'none';
                 setsArea.style.display = 'none';
                 regexPanel.style.display = 'none';
                 dfaArea.style.display = 'none';
                 treeArea.style.display = 'none';
+                symArea.style.display = 'none'; // 【新增】
                 outputWrapper.style.height = "550px";
 
                 if (id === 5) {
@@ -686,6 +883,10 @@ F -> id`;
                             document.getElementById('tree-chart-view').innerHTML = "<div class='empty-tip'>点击运行查看语法树</div>";
                             if (treeChart) { treeChart.dispose(); treeChart = null; }
                             outputWrapper.style.height = "180px";
+                        } else if (id === 4) { // 【新增】Lab 4 逻辑
+                            symArea.style.display = 'flex';
+                            document.getElementById('symtable-view').innerHTML = "<div class='empty-tip' style='margin-top: 150px;'>运行代码以查看内存布局</div>";
+                            outputWrapper.style.height = "180px"; // 缩小控制台，给表格留空间
                         }
                     }
                 }
@@ -732,6 +933,16 @@ F -> id`;
                         let cleanLines = lines.filter(l => l.startsWith('\t') || (l.trim().length > 0 && !l.startsWith('Stack') && !l.startsWith('Match') && !l.startsWith('Action') && !l.includes('语法错误')));
                         if (cleanLines.length > 0) {
                             renderEChartsTree(parseIndentedTextToTree(cleanLines));
+                        }
+                    } else if (currentLabId === 4) { // 【新增】Lab 4 符号表渲染
+                        try {
+                            if (wasmModule.getSymbolTable) {
+                                const jsonStr = wasmModule.getSymbolTable(input);
+                                const data = JSON.parse(jsonStr);
+                                renderSymbolTable(data);
+                            }
+                        } catch (e) {
+                            console.error("Symbol table error:", e);
                         }
                     }
                 } catch (e) {
@@ -781,6 +992,7 @@ F -> id`;
                     tooltip: { trigger: 'item', triggerOn: 'mousemove' },
                     series: [{
                         type: 'tree',
+                        roam: true,
                         data: [data],
                         top: '5%', left: '10%', bottom: '5%', right: '20%',
                         symbolSize: 8,
@@ -830,6 +1042,48 @@ F -> id`;
                     renderSet(data.first, 'first-res');
                     renderSet(data.follow, 'follow-res');
                 } catch (e) { console.error(e); alert("计算失败，请检查文法"); }
+            }
+
+            // 【新增】渲染符号表的辅助函数
+            function renderSymbolTable(data) {
+                const container = document.getElementById('symtable-view');
+                if (!data || data.length === 0) {
+                    container.innerHTML = "<div class='empty-tip' style='margin-top:150px;'>符号表为空或无变量声明</div>";
+                    return;
+                }
+
+                let html = `
+                <table class="sym-table">
+                    <thead>
+                        <tr>
+                            <th>变量名 (ID)</th>
+                            <th>类型 (Type)</th>
+                            <th>定义行 (Line)</th>
+                            <th>大小 (Size)</th>
+                            <th>偏移量 (Offset)</th>
+                            <th>当前值 (Val)</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                data.forEach(item => {
+                    const typeClass = `type-${item.type}`;
+                    // 格式化十六进制地址显示
+                    const hexOffset = "0x" + item.offset.toString(16).toUpperCase().padStart(4, '0');
+
+                    html += `
+                        <tr>
+                            <td style="font-weight:bold; color:#2c3e50;">${item.name}</td>
+                            <td><span class="type-badge ${typeClass}">${item.type}</span></td>
+                            <td style="color:#666;">${item.line}</td>
+                            <td style="font-family:monospace;">${item.size} bytes</td>
+                            <td><span class="addr-text">${hexOffset}</span> <span style="font-size:0.8em;color:#ccc">(${item.offset})</span></td>
+                            <td style="font-family:monospace; color:#27ae60;">${item.val}</td>
+                        </tr>`;
+                });
+
+                html += `</tbody></table>`;
+                container.innerHTML = html;
             }
 
             // 初始化
