@@ -574,7 +574,7 @@
                         { name: "3. While 循环", content: `{\nwhile ( ID == NUM ) \n{ \nID = NUM ;\n}\n}` },
                         { name: "4. If-Then-Else", content: `{\nif ( ID == ID )\nthen\nID = NUM ;\nelse\nID = ID * NUM ;\n}` },
                         { name: "5. 嵌套 If-Else", content: `{\nif ( ID < NUM ) then\n  if ( ID == NUM ) then \n    ID = NUM ;\n  else \n    ID = ID + NUM ;\nelse\n  ID = 0 ;\n}` },
-                        { name: "6. 复杂表达式", content: `{\nID = ID + ID * NUM + ID * ( ID + NUM ) ;\n}` },
+                        { name: "6. 缺少 Else (错误恢复)", content: `{\n    if ( a < b ) \n    then \n        a = a + 1 ;\n}` },
                         { name: "7. 混合控制", content: `{\nwhile ( ID >= NUM ) {\n  if ( ID != NUM ) then\n    ID = ID + 1 ;\n  else\n    ID = ID * 2 ;\n}\n}` },
                         { name: "8. 多重语句块", content: `{\nID = NUM ;\n{\n  ID = ID + 1 ;\n  {\n    ID = NUM ;\n  }\n}\n}` },
                         { name: "9. [错] 缺分号", content: `{\nID = NUM\nID = ID + 1 ;\n}` },
